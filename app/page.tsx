@@ -8,10 +8,6 @@ export default function RootPage() {
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
-    // Smooth transition sequence (~2.4s total):
-    // Starts animation immediately on mount with 60fps CSS keyframes
-    // Triggers fade out at 2.1s
-    // Redirects to /login at 2.45s
     const tFade = setTimeout(() => setIsFadingOut(true), 2100);
     const tRedirect = setTimeout(() => {
       router.push('/login');
@@ -139,7 +135,7 @@ export default function RootPage() {
 
       <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: '32rem', width: '100%' }}>
         
-        {/* LOGO CONTAINER WITH SLEEK GOLD AURA */}
+        {/* LOGO CONTAINER */}
         <div 
           style={{
             animation: 'logoReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
@@ -164,7 +160,7 @@ export default function RootPage() {
           >
             <img 
               src="/ruc-logo.png" 
-              alt="RUC Logo" 
+              alt="RUC Prayer Unit Logo" 
               width={112} 
               height={112} 
               style={{ objectFit: 'contain', width: '100%', height: '100%', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.15))' }}
@@ -191,8 +187,8 @@ export default function RootPage() {
           RUC
         </div>
 
-        {/* "PRAYER UNIT" HEADING */}
-        <div 
+        {/* "PRAYER UNIT" SEMANTIC H1 FOR SEO */}
+        <h1 
           style={{
             animation: 'titleSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.55s forwards',
             opacity: 0,
@@ -206,7 +202,7 @@ export default function RootPage() {
           }}
         >
           PRAYER UNIT
-        </div>
+        </h1>
 
         {/* SUBTITLE DIVIDER LINE */}
         <div 
@@ -222,13 +218,13 @@ export default function RootPage() {
           }}
         >
           <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.6))', maxWidth: '4rem' }} />
-          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#93c5fd', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+          <h2 style={{ fontSize: '0.85rem', fontWeight: 600, color: '#93c5fd', letterSpacing: '0.06em', textTransform: 'uppercase', margin: 0 }}>
             Attendance Management System
-          </span>
+          </h2>
           <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, rgba(255,215,0,0.6), transparent)', maxWidth: '4rem' }} />
         </div>
 
-        {/* LUXURY PROGRESS BAR */}
+        {/* PROGRESS BAR */}
         <div 
           style={{ 
             width: '13rem', 
