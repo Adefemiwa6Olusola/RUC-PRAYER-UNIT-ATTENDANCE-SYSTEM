@@ -7,17 +7,6 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'default-s
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow static Google verification files, sitemaps, robots.txt, keepalive, and public paths
-  if (
-    pathname.startsWith('/google') ||
-    pathname.endsWith('.html') ||
-    pathname === '/sitemap.xml' ||
-    pathname === '/robots.txt' ||
-    pathname === '/api/keepalive'
-  ) {
-    return NextResponse.next();
-  }
-
   const publicPaths = [
     '/',
     '/login',
@@ -26,9 +15,13 @@ export async function middleware(request: NextRequest) {
     '/api/auth/forgot-password',
     '/api/auth/reset-password',
     '/api/centres',
+    '/api/keepalive',
     '/_next',
     '/favicon.ico',
-    '/ruc-logo.png'
+    '/ruc-logo.png',
+    '/sitemap.xml',
+    '/robots.txt',
+    '/google22f7b05948bfa609.html'
   ];
 
   const isPublic = publicPaths.some(p => pathname === p || pathname.startsWith(p + '/'));
@@ -60,5 +53,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|google.*|sitemap\\.xml|robots\\.txt).*)'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|google22f7b05948bfa609\\.html|sitemap\\.xml|robots\\.txt).*)'
+  ],
 };
