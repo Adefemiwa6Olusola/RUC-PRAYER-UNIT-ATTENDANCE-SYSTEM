@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   creator: "RUC Prayer Unit",
   publisher: "Redeemer's University Chapel",
   verification: {
-    google: 'google22f7b05948bfa609',
+    google: 'NgPp9fCiQ5GMM9dyglMc5xYKZnjSyQkG2IuHQEpKnBw',
   },
   formatDetection: {
     email: false,
@@ -90,6 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        <meta name="google-site-verification" content="NgPp9fCiQ5GMM9dyglMc5xYKZnjSyQkG2IuHQEpKnBw" />
         <link rel="icon" href="/ruc-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/ruc-logo.png" />
         <script
