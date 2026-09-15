@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   authors: [{ name: "RUC Prayer Unit Team" }],
   creator: "RUC Prayer Unit",
   publisher: "Redeemer's University Chapel",
+  verification: {
+    google: 'google22f7b05948bfa609',
+  },
   formatDetection: {
     email: false,
     address: false,
