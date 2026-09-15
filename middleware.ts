@@ -7,6 +7,17 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'default-s
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Allow static Google verification files, sitemaps, robots.txt, keepalive, and public paths
+  if (
+    pathname.startsWith('/google') ||
+    pathname.endsWith('.html') ||
+    pathname === '/sitemap.xml' ||
+    pathname === '/robots.txt' ||
+    pathname === '/api/keepalive'
+  ) {
+    return NextResponse.next();
+  }
+
   const publicPaths = [
     '/',
     '/login',
