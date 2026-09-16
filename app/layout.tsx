@@ -35,10 +35,11 @@ export const metadata: Metadata = {
     canonical: 'https://ruc-prayerunit.vercel.app',
   },
   icons: {
-    icon: '/ruc-logo.png',
-    shortcut: '/ruc-logo.png',
-    apple: '/ruc-logo.png',
+    icon: 'https://ruc-prayerunit.vercel.app/ruc-logo.png',
+    shortcut: 'https://ruc-prayerunit.vercel.app/favicon.ico',
+    apple: 'https://ruc-prayerunit.vercel.app/apple-touch-icon.png',
   },
+  manifest: 'https://ruc-prayerunit.vercel.app/site.webmanifest',
   openGraph: {
     title: "RUC Prayer Unit | Official Attendance & Portal System",
     description: "Official Redeemer's University (RUN) Prayer Unit Attendance Management System. Track prayer unit sign-ins, statistics, and member records.",
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
     siteName: 'RUC Prayer Unit',
     images: [
       {
-        url: '/ruc-logo.png',
+        url: 'https://ruc-prayerunit.vercel.app/ruc-logo.png',
         width: 500,
         height: 500,
         alt: 'RUC Prayer Unit Logo',
@@ -59,7 +60,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "RUC Prayer Unit | Official Attendance & Portal System",
     description: "Official Redeemer's University (RUN) Prayer Unit Attendance Management System.",
-    images: ['/ruc-logo.png'],
+    images: ['https://ruc-prayerunit.vercel.app/ruc-logo.png'],
   },
   robots: {
     index: true,
@@ -91,8 +92,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <meta name="google-site-verification" content="NgPp9fCiQ5GMM9dyglMc5xYKZnjSyQkG2IuHQEpKnBw" />
-        <link rel="icon" href="/ruc-logo.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/ruc-logo.png" />
+        <link rel="shortcut icon" href="https://ruc-prayerunit.vercel.app/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="https://ruc-prayerunit.vercel.app/icon.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="https://ruc-prayerunit.vercel.app/ruc-logo.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="https://ruc-prayerunit.vercel.app/apple-touch-icon.png" />
+        <link rel="manifest" href="https://ruc-prayerunit.vercel.app/site.webmanifest" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -18,7 +18,10 @@ export async function middleware(request: NextRequest) {
     '/api/keepalive',
     '/_next',
     '/favicon.ico',
+    '/icon.png',
+    '/apple-touch-icon.png',
     '/ruc-logo.png',
+    '/site.webmanifest',
     '/sitemap.xml',
     '/robots.txt',
     '/google22f7b05948bfa609.html'
@@ -54,6 +57,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|google22f7b05948bfa609\\.html|sitemap\\.xml|robots\\.txt).*)'
+    '/((?!_next/static|_next/image|favicon\\.ico|icon\\.png|apple-touch-icon\\.png|ruc-logo\\.png|site\\.webmanifest|google22f7b05948bfa609\\.html|sitemap\\.xml|robots\\.txt).*)'
   ],
 };

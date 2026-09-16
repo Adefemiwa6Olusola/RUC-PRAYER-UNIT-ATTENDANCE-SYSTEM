@@ -1,0 +1,19 @@
+{
+  "name": "RUC Prayer Unit",
+  "short_name": "RUC Prayer Unit",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/ruc-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#002f63",
+  "background_color": "#00132b",
+  "display": "standalone"
+}
