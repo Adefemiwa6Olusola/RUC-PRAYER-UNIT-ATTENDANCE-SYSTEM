@@ -16,24 +16,25 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "next": "14.2.15",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "@prisma/client": "^5.22.0",
     "bcryptjs": "^2.4.3",
-    "jose": "^5.9.6",
     "chart.js": "^4.4.6",
-    "react-chartjs-2": "^5.2.0",
     "date-fns": "^4.1.0",
-    "papaparse": "^5.4.1"
+    "jose": "^5.9.6",
+    "next": "14.2.15",
+    "papaparse": "^5.4.1",
+    "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "prisma": "^5.22.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.9.0",
+    "@types/papaparse": "^5.3.15",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/papaparse": "^5.3.15",
+    "prisma": "^5.22.0",
+    "sharp": "^0.35.4",
     "typescript": "^5.6.3"
   },
   "prisma": {

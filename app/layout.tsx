@@ -93,8 +93,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta name="google-site-verification" content="NgPp9fCiQ5GMM9dyglMc5xYKZnjSyQkG2IuHQEpKnBw" />
         <link rel="shortcut icon" href="https://ruc-prayerunit.vercel.app/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="32x32" href="https://ruc-prayerunit.vercel.app/icon.png" />
-        <link rel="icon" type="image/png" sizes="192x192" href="https://ruc-prayerunit.vercel.app/ruc-logo.png" />
+        <link rel="icon" type="image/png" sizes="48x48" href="https://ruc-prayerunit.vercel.app/favicon-48x48.png" />
+        <link rel="icon" type="image/png" sizes="96x96" href="https://ruc-prayerunit.vercel.app/icon-96x96.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="https://ruc-prayerunit.vercel.app/icon-192x192.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="https://ruc-prayerunit.vercel.app/apple-touch-icon.png" />
         <link rel="manifest" href="https://ruc-prayerunit.vercel.app/site.webmanifest" />
         <script

@@ -18,8 +18,12 @@ export async function middleware(request: NextRequest) {
     '/api/keepalive',
     '/_next',
     '/favicon.ico',
+    '/favicon-48x48.png',
+    '/icon-96x96.png',
+    '/icon-192x192.png',
     '/icon.png',
     '/apple-touch-icon.png',
+    '/apple-icon.png',
     '/ruc-logo.png',
     '/site.webmanifest',
     '/sitemap.xml',
@@ -57,6 +61,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon\\.ico|icon\\.png|apple-touch-icon\\.png|ruc-logo\\.png|site\\.webmanifest|google22f7b05948bfa609\\.html|sitemap\\.xml|robots\\.txt).*)'
+    '/((?!_next/static|_next/image|favicon.*|icon.*|apple-.*|ruc-logo\\.png|site\\.webmanifest|google22f7b05948bfa609\\.html|sitemap\\.xml|robots\\.txt).*)'
   ],
 };
