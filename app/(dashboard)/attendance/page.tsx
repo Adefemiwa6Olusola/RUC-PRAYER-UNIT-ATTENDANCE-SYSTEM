@@ -122,6 +122,28 @@ export default function AttendancePage() {
         if (data.session) setActiveSession(data.session);
         else setActiveSession({ id: data.id || 'auto-session' });
         setIsSessionActive(true);
+
+        // Fetch today's existing attendance records from database on mount (Fix Bug 1 persistence on refresh)
+        const todayStr = new Date().toISOString().split('T')[0];
+        const historyRes = await fetch(`/api/attendance/history?from=${todayStr}&to=${todayStr}`).catch(() => null);
+        if (historyRes && historyRes.ok) {
+          const hData = await historyRes.json();
+          const recs = Array.isArray(hData.data) ? hData.data : Array.isArray(hData) ? hData : [];
+          const formattedRecs = recs.map((r: any) => ({
+            id: r.student?.id || r.studentId,
+            fullName: r.student?.fullName || r.studentName || 'Student',
+            matricNo: r.student?.matricNo || r.matricNumber || '',
+            locationName: r.session?.centre?.name || r.centre || userCentreName,
+            time: new Date(r.checkInAt || r.createdAt || Date.now()).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+            status: r.status || 'PRESENT'
+          }));
+          setRecentRecords(formattedRecs);
+          setStats(prev => {
+            const todayCount = formattedRecs.length;
+            const rate = prev.totalStudents > 0 ? Math.round((todayCount / prev.totalStudents) * 10000) / 100 : 0;
+            return { ...prev, todaySignIns: todayCount, attendanceRate: rate };
+          });
+        }
       } catch (e) {
         setIsSessionActive(true);
         setActiveSession({ id: 'auto-session' });
@@ -271,22 +293,32 @@ export default function AttendancePage() {
     setAmbiguousMatches([]);
     if (inputRef.current) inputRef.current.focus();
 
-    // 4. Background non-blocking API call to persist in database
-    if (activeSession?.id && targetStudent.id) {
+    // 4. Guaranteed Database API call to persist in Prisma database
+    if (targetStudent.id) {
       try {
-        fetch('/api/attendance/mark', {
+        const markRes = await fetch('/api/attendance/mark', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ studentId: targetStudent.id, sessionId: activeSession.id })
-        }).then(async (markRes) => {
-          if (!markRes.ok) {
-            const resData = await markRes.json();
-            if (resData.status === 'duplicate' || markRes.status === 409) {
-              setMessage({ type: 'warning', text: `Already Recorded: ${targetStudent.fullName} (${targetStudent.matricNo})` });
-            }
+          body: JSON.stringify({
+            studentId: targetStudent.id,
+            sessionId: activeSession?.id && activeSession.id !== 'auto-session' ? activeSession.id : undefined
+          })
+        });
+
+        if (markRes.ok) {
+          const resData = await markRes.json();
+          if (resData.session?.id && (!activeSession?.id || activeSession.id === 'auto-session')) {
+            setActiveSession(resData.session);
           }
-        }).catch(() => {});
-      } catch (e) {}
+        } else {
+          const resData = await markRes.json();
+          if (resData.status === 'duplicate' || markRes.status === 409) {
+            setMessage({ type: 'warning', text: `Already Recorded: ${targetStudent.fullName} (${targetStudent.matricNo})` });
+          }
+        }
+      } catch (e) {
+        console.error('Error persisting attendance:', e);
+      }
     }
   };
 

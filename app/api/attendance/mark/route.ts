@@ -14,13 +14,64 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { sessionId, studentId, status = 'PRESENT' } = body;
+    let { sessionId, studentId, status = 'PRESENT' } = body;
 
-    if (!sessionId || !studentId) {
-      return NextResponse.json({ error: 'Session ID and Student ID are required' }, { status: 400 });
+    if (!studentId) {
+      return NextResponse.json({ error: 'Student ID is required' }, { status: 400 });
     }
 
-    // Direct check for duplicate record for this student and session (or today)
+    // Auto-resolve valid session if sessionId is missing or dummy 'auto-session'
+    let session: any = null;
+    if (sessionId && sessionId !== 'auto-session') {
+      session = await prisma.attendanceSession.findUnique({ where: { id: sessionId } });
+    }
+
+    if (!session) {
+      // Find open session or create one
+      session = await prisma.attendanceSession.findFirst({
+        where: { status: 'OPEN' },
+        orderBy: { startedAt: 'desc' }
+      });
+    }
+
+    if (!session) {
+      let defaultCentre = await prisma.centre.findFirst();
+      if (!defaultCentre) {
+        defaultCentre = await prisma.centre.create({
+          data: { name: 'Chapel', description: 'Main Chapel Centre' }
+        });
+      }
+
+      let defaultMeeting = await prisma.meeting.findFirst({
+        where: { centreId: defaultCentre.id }
+      });
+
+      if (!defaultMeeting) {
+        defaultMeeting = await prisma.meeting.create({
+          data: {
+            title: 'Daily Prayer Service',
+            description: 'General prayer meeting',
+            meetingDate: new Date(),
+            centreId: defaultCentre.id,
+            createdById: user.userId
+          }
+        });
+      }
+
+      session = await prisma.attendanceSession.create({
+        data: {
+          meetingId: defaultMeeting.id,
+          centreId: defaultCentre.id,
+          status: 'OPEN',
+          startedAt: new Date(),
+          startedById: user.userId
+        }
+      });
+    }
+
+    sessionId = session.id;
+
+    // Direct check for duplicate record for this student and session
     const existing = await prisma.attendanceRecord.findFirst({
       where: { studentId, sessionId },
       include: { student: { select: { fullName: true, matricNo: true } } }

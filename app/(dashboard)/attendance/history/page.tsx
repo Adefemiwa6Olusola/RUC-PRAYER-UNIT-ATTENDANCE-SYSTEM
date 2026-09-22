@@ -15,12 +15,25 @@ export default function AttendanceHistoryPage() {
   const [currentCalendarDate, setCurrentCalendarDate] = useState(new Date());
   const [selectedCalendarDay, setSelectedCalendarDay] = useState<string>('');
 
+  const [activePreset, setActivePreset] = useState<'today' | 'yesterday' | 'week' | 'month' | 'clear' | 'custom'>('clear');
+
   useEffect(() => {
     fetchCentres();
+    // Restore session active preset if stored
+    try {
+      const savedPreset = sessionStorage.getItem('ruc_history_preset');
+      const savedFilters = sessionStorage.getItem('ruc_history_filters');
+      if (savedPreset) setActivePreset(savedPreset as any);
+      if (savedFilters) setFilters(JSON.parse(savedFilters));
+    } catch (e) {}
   }, []);
 
   useEffect(() => {
     fetchRecords();
+    try {
+      sessionStorage.setItem('ruc_history_preset', activePreset);
+      sessionStorage.setItem('ruc_history_filters', JSON.stringify(filters));
+    } catch (e) {}
   }, [filters, pagination.page]);
 
   const fetchCentres = async () => {
@@ -71,6 +84,7 @@ export default function AttendanceHistoryPage() {
     setFilters(prev => ({ ...prev, [e.target.name]: e.target.value }));
     setPagination(prev => ({ ...prev, page: 1 }));
     setSelectedCalendarDay('');
+    setActivePreset('custom');
   };
 
   const isSunday = (dateStr: string) => {
@@ -97,11 +111,13 @@ export default function AttendanceHistoryPage() {
     setSelectedCalendarDay(dateStr);
     setFilters(prev => ({ ...prev, from: dateStr, to: dateStr }));
     setPagination(prev => ({ ...prev, page: 1 }));
+    setActivePreset('custom');
   };
 
   const setPresetFilter = (preset: 'today' | 'yesterday' | 'week' | 'month' | 'clear') => {
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0];
+    setActivePreset(preset);
 
     if (preset === 'today') {
       setFilters(prev => ({ ...prev, from: todayStr, to: todayStr }));
@@ -237,19 +253,69 @@ export default function AttendanceHistoryPage() {
                   </div>
                 </div>
 
-                {/* Quick Preset Badges */}
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <button onClick={() => setPresetFilter('today')} style={{ padding: '0.35rem 0.75rem', borderRadius: '9999px', border: '1px solid #d1d5db', backgroundColor: '#f9fafb', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', color: '#374151' }}>Today</button>
-                  <button onClick={() => setPresetFilter('yesterday')} style={{ padding: '0.35rem 0.75rem', borderRadius: '9999px', border: '1px solid #d1d5db', backgroundColor: '#f9fafb', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', color: '#374151' }}>Yesterday</button>
-                  <button onClick={() => setPresetFilter('week')} style={{ padding: '0.35rem 0.75rem', borderRadius: '9999px', border: '1px solid #d1d5db', backgroundColor: '#f9fafb', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', color: '#374151' }}>Last 7 Days</button>
-                  <button onClick={() => setPresetFilter('month')} style={{ padding: '0.35rem 0.75rem', borderRadius: '9999px', border: '1px solid #d1d5db', backgroundColor: '#f9fafb', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', color: '#374151' }}>This Month</button>
-                  <button onClick={() => setPresetFilter('clear')} style={{ padding: '0.35rem 0.75rem', borderRadius: '9999px', border: '1px solid #fecaca', backgroundColor: '#fef2f2', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', color: '#dc2626' }}>Reset Filter</button>
+                {/* Quick Preset Badges with High-Contrast Active Visual Feedback */}
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                  {[
+                    { id: 'today', label: 'Today' },
+                    { id: 'yesterday', label: 'Yesterday' },
+                    { id: 'week', label: 'Last 7 Days' },
+                    { id: 'month', label: 'This Month' },
+                  ].map(p => {
+                    const isActive = activePreset === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => setPresetFilter(p.id as any)}
+                        style={{
+                          padding: '0.4rem 0.85rem',
+                          borderRadius: '9999px',
+                          border: isActive ? '1.5px solid #002f63' : '1px solid #d1d5db',
+                          backgroundColor: isActive ? '#002f63' : '#f9fafb',
+                          color: isActive ? 'white' : '#374151',
+                          fontSize: '0.75rem',
+                          fontWeight: isActive ? 700 : 600,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                          boxShadow: isActive ? '0 2px 6px rgba(0, 47, 99, 0.25)' : 'none',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        {isActive && <span>✓</span>}
+                        {p.label}
+                      </button>
+                    );
+                  })}
+                  <button
+                    onClick={() => setPresetFilter('clear')}
+                    style={{
+                      padding: '0.4rem 0.85rem',
+                      borderRadius: '9999px',
+                      border: activePreset === 'clear' ? '1.5px solid #dc2626' : '1px solid #fecaca',
+                      backgroundColor: activePreset === 'clear' ? '#dc2626' : '#fef2f2',
+                      color: activePreset === 'clear' ? 'white' : '#dc2626',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    Reset Filter
+                  </button>
                 </div>
               </div>
 
-              {/* Status summary */}
-              <div style={{ padding: '0.75rem', borderRadius: '0.5rem', backgroundColor: '#eff6ff', border: '1px solid #dbeafe', fontSize: '0.75rem', color: '#1e40af', marginTop: '1rem' }}>
-                Showing <strong>{pagination.total}</strong> attendance record(s) {filters.from ? `for ${filters.from}` : 'for all dates'}.
+              {/* Status summary & Active filter visual indicator badge */}
+              <div style={{ padding: '0.75rem 1rem', borderRadius: '0.5rem', backgroundColor: '#eff6ff', border: '1px solid #dbeafe', fontSize: '0.8rem', color: '#1e40af', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div>
+                  Showing <strong>{pagination.total}</strong> attendance record(s) {filters.from ? `from ${filters.from}${filters.to && filters.to !== filters.from ? ` to ${filters.to}` : ''}` : 'for all dates'}.
+                </div>
+                {activePreset !== 'clear' && (
+                  <span style={{ fontSize: '0.7rem', fontWeight: 800, backgroundColor: '#002f63', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Active: {activePreset}
+                  </span>
+                )}
               </div>
             </div>
           </div>

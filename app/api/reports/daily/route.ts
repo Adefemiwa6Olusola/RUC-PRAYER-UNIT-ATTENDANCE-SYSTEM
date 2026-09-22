@@ -12,29 +12,53 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const dateParam = searchParams.get('date');
-    const targetDate = dateParam ? new Date(dateParam) : new Date();
-    targetDate.setHours(0, 0, 0, 0);
-    const nextDate = new Date(targetDate);
-    nextDate.setDate(nextDate.getDate() + 1);
+    const fromParam = searchParams.get('from');
+    const toParam = searchParams.get('to');
 
-    const report = await prisma.attendanceSession.findMany({
-      where: {
-        meeting: {
-            meetingDate: {
-              gte: targetDate,
-              lt: nextDate,
-            }
+    let fromDate = dateParam ? new Date(dateParam) : fromParam ? new Date(fromParam) : new Date();
+    fromDate.setHours(0, 0, 0, 0);
+
+    let toDate = toParam ? new Date(toParam) : new Date(fromDate);
+    toDate.setHours(23, 59, 59, 999);
+
+    const [totalStudents, totalPresent, records] = await Promise.all([
+      prisma.student.count(),
+      prisma.attendanceRecord.count({
+        where: {
+          checkInAt: {
+            gte: fromDate,
+            lte: toDate,
+          }
         }
-      },
-      include: { 
-          attendanceRecords: true,
-          meeting: true,
-          centre: true
-      },
-    });
+      }),
+      prisma.attendanceRecord.findMany({
+        where: {
+          checkInAt: {
+            gte: fromDate,
+            lte: toDate,
+          }
+        },
+        include: {
+          student: true,
+          session: {
+            include: { centre: true, meeting: true }
+          }
+        },
+        orderBy: { checkInAt: 'desc' }
+      })
+    ]);
 
-    return NextResponse.json(report);
+    const attendanceRate = totalStudents > 0 ? Math.round((totalPresent / totalStudents) * 10000) / 100 : 0;
+
+    return NextResponse.json({
+      date: fromDate.toISOString().split('T')[0],
+      totalStudents,
+      totalPresent,
+      attendanceRate,
+      records
+    });
   } catch (error) {
+    console.error('Error in daily report API:', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }
