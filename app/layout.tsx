@@ -7,6 +7,10 @@ export const metadata: Metadata = {
     default: "RUC Prayer Unit | Official Attendance & Portal System",
     template: "%s | RUC Prayer Unit",
   },
+  applicationName: "RUC Prayer Unit",
+  appleWebApp: {
+    title: "RUC Prayer Unit",
+  },
   description: "Official Redeemer's University (RUN) Prayer Unit Attendance Portal. Mark prayer meeting attendance, view statistics, manage student roster, and track unit participation across all centres.",
   keywords: [
     "RUC Prayer Unit",
@@ -35,7 +39,11 @@ export const metadata: Metadata = {
     canonical: 'https://ruc-prayerunit.vercel.app',
   },
   icons: {
-    icon: 'https://ruc-prayerunit.vercel.app/ruc-logo.png',
+    icon: [
+      { url: 'https://ruc-prayerunit.vercel.app/favicon.ico', sizes: 'any' },
+      { url: 'https://ruc-prayerunit.vercel.app/favicon-48x48.png', type: 'image/png', sizes: '48x48' },
+      { url: 'https://ruc-prayerunit.vercel.app/icon-192x192.png', type: 'image/png', sizes: '192x192' },
+    ],
     shortcut: 'https://ruc-prayerunit.vercel.app/favicon.ico',
     apple: 'https://ruc-prayerunit.vercel.app/apple-touch-icon.png',
   },
@@ -76,23 +84,40 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // Google Rich Snippet Structured Data (JSON-LD) for organic ranking
+  // Google Search Site Name & Rich Snippet Structured Data (JSON-LD)
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'EducationalOrganization',
-    name: 'RUC Prayer Unit',
-    alternateName: ["Redeemer's University Prayer Unit", "RUN Prayer Unit", "RUC Prayer Unit Attendance"],
-    url: 'https://ruc-prayerunit.vercel.app',
-    logo: 'https://ruc-prayerunit.vercel.app/ruc-logo.png',
-    description: "Official RUC Prayer Unit Attendance System for Redeemer's University Chapel of Power.",
-    sameAs: [],
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': 'https://ruc-prayerunit.vercel.app/#website',
+        url: 'https://ruc-prayerunit.vercel.app/',
+        name: 'RUC Prayer Unit',
+        alternateName: ["Redeemer's University Prayer Unit", "RUN Prayer Unit", "RUC Prayer Unit Attendance"],
+        publisher: {
+          '@type': 'Organization',
+          name: "Redeemer's University Chapel",
+          logo: 'https://ruc-prayerunit.vercel.app/ruc-logo.png',
+        },
+      },
+      {
+        '@type': 'EducationalOrganization',
+        '@id': 'https://ruc-prayerunit.vercel.app/#organization',
+        name: 'RUC Prayer Unit',
+        url: 'https://ruc-prayerunit.vercel.app/',
+        logo: 'https://ruc-prayerunit.vercel.app/ruc-logo.png',
+        description: "Official RUC Prayer Unit Attendance System for Redeemer's University Chapel of Power.",
+      },
+    ],
   };
 
   return (
     <html lang="en">
       <head>
         <meta name="google-site-verification" content="NgPp9fCiQ5GMM9dyglMc5xYKZnjSyQkG2IuHQEpKnBw" />
-        <link rel="shortcut icon" href="https://ruc-prayerunit.vercel.app/favicon.ico" />
+        <meta name="application-name" content="RUC Prayer Unit" />
+        <meta name="apple-mobile-web-app-title" content="RUC Prayer Unit" />
+        <link rel="icon" href="https://ruc-prayerunit.vercel.app/favicon.ico" sizes="any" />
         <link rel="icon" type="image/png" sizes="48x48" href="https://ruc-prayerunit.vercel.app/favicon-48x48.png" />
         <link rel="icon" type="image/png" sizes="96x96" href="https://ruc-prayerunit.vercel.app/icon-96x96.png" />
         <link rel="icon" type="image/png" sizes="192x192" href="https://ruc-prayerunit.vercel.app/icon-192x192.png" />
